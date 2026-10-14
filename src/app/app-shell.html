@@ -1,0 +1,77 @@
+<div class="app-shell">
+  <mat-toolbar class="topbar">
+    @if (isMobile()) {
+      <button
+        mat-icon-button
+        class="menu-toggle"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="primary-navigation"
+        [attr.aria-expanded]="drawerOpened()"
+        (click)="toggleNavigation()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+    }
+
+    <a class="brand" routerLink="/dashboard" aria-label="ACME Salary Management home">
+      <span class="brand-mark" aria-hidden="true">AC</span>
+      <span class="brand-name">ACME Salary Management</span>
+    </a>
+
+    <span class="toolbar-spacer"></span>
+    <span class="workspace-label">
+      <mat-icon aria-hidden="true">business_center</mat-icon>
+      <span>HR WORKSPACE</span>
+    </span>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="layout-container" [hasBackdrop]="isMobile()">
+    <mat-sidenav
+      id="primary-navigation"
+      class="sidebar"
+      [mode]="drawerMode()"
+      [opened]="drawerOpened()"
+      (openedChange)="onNavigationChange($event)"
+    >
+      <div class="navigation-heading">WORKSPACE</div>
+      <mat-nav-list class="navigation-list" aria-label="Main navigation">
+        <a
+          mat-list-item
+          class="navigation-link"
+          routerLink="/dashboard"
+          routerLinkActive="navigation-link-active"
+          ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeNavigationOnMobile()"
+        >
+          <mat-icon matListItemIcon aria-hidden="true">space_dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
+        <a
+          mat-list-item
+          class="navigation-link"
+          routerLink="/employees"
+          routerLinkActive="navigation-link-active"
+          ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeNavigationOnMobile()"
+        >
+          <mat-icon matListItemIcon aria-hidden="true">groups</mat-icon>
+          <span matListItemTitle>Employee Directory</span>
+        </a>
+      </mat-nav-list>
+
+      <div class="sidebar-footer">
+        <span class="footer-mark" aria-hidden="true"></span>
+        <span>ACME PEOPLE OPERATIONS</span>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="content-panel">
+      <main class="main-content">
+        <router-outlet />
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
