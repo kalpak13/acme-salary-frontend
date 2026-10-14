@@ -1,0 +1,112 @@
+<div class="directory-page">
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">PEOPLE OPERATIONS</span>
+      <h1>Employee directory</h1>
+    </div>
+    <div class="record-count" aria-live="polite">
+      {{ totalElements() | number }} <span>employees</span>
+    </div>
+  </header>
+
+  <section class="filter-row" aria-label="Filter employees">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Department</mat-label>
+      <input matInput [formControl]="departmentControl" placeholder="e.g. Engineering" />
+      <mat-icon matSuffix aria-hidden="true">domain</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Country</mat-label>
+      <input matInput [formControl]="countryControl" placeholder="e.g. Canada" />
+      <mat-icon matSuffix aria-hidden="true">public</mat-icon>
+    </mat-form-field>
+
+    <button
+      mat-stroked-button
+      class="clear-button"
+      type="button"
+      [disabled]="!departmentControl.value && !countryControl.value"
+      (click)="clearFilters()"
+    >
+      <mat-icon>filter_alt_off</mat-icon>
+      Clear filters
+    </button>
+  </section>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Loading employees"></mat-progress-bar>
+  }
+
+  @if (loadError()) {
+    <div class="error-banner" role="alert">
+      <mat-icon aria-hidden="true">cloud_off</mat-icon>
+      <span>Employee records could not be loaded.</span>
+      <button mat-button type="button" (click)="retry()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div>
+  }
+
+  <section class="table-shell" aria-label="Employee records">
+    <div class="table-scroll" [attr.aria-busy]="loading()">
+      <table mat-table [dataSource]="employees()" class="employee-table">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="employee">
+          <th mat-header-cell *matHeaderCellDef>Employee</th>
+          <td mat-cell *matCellDef="let employee">
+            <span class="employee-name">{{ employee.firstName }} {{ employee.lastName }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="jobTitle">
+          <th mat-header-cell *matHeaderCellDef>Job title</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.jobTitle }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="department">
+          <th mat-header-cell *matHeaderCellDef>Department</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.department }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="country">
+          <th mat-header-cell *matHeaderCellDef>Country</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.country }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="salary">
+          <th mat-header-cell *matHeaderCellDef class="salary-column">Salary</th>
+          <td mat-cell *matCellDef="let employee" class="salary-column">
+            {{ employee.salary | currency: employee.currency : 'symbol' : '1.0-0' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      @if (!loading() && !loadError() && employees().length === 0) {
+        <div class="empty-state">
+          <mat-icon aria-hidden="true">person_search</mat-icon>
+          <span>No employees found.</span>
+        </div>
+      }
+    </div>
+
+    <mat-paginator
+      aria-label="Employee table pagination"
+      [length]="totalElements()"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="pageSizeOptions"
+      [disabled]="loading()"
+      [showFirstLastButtons]="true"
+      (page)="onPage($event)"
+    ></mat-paginator>
+  </section>
+</div>
