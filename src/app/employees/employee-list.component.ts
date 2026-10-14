@@ -3,13 +3,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
-import { debounceTime, merge, of, Subject, switchMap, tap, catchError } from 'rxjs';
+import { catchError, debounceTime, filter, merge, of, Subject, switchMap, tap } from 'rxjs';
+import { EmployeeFormDialogComponent } from './employee-form-dialog/employee-form-dialog.component';
 import { Employee } from '../models/employee.model';
 import { PageResponse } from '../models/page-response.model';
 import { EmployeeService } from '../services/employee.service';
@@ -28,6 +30,7 @@ interface EmployeePageRequest {
     CurrencyPipe,
     DecimalPipe,
     MatButtonModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -41,6 +44,7 @@ interface EmployeePageRequest {
 })
 export class EmployeeListComponent implements OnInit {
   private readonly employeeService = inject(EmployeeService);
+  private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
   private readonly pageRequests = new Subject<EmployeePageRequest>();
 
@@ -52,7 +56,16 @@ export class EmployeeListComponent implements OnInit {
   protected readonly pageSize = signal(25);
   protected readonly loading = signal(false);
   protected readonly loadError = signal(false);
-  protected readonly displayedColumns = ['id', 'employee', 'jobTitle', 'department', 'country', 'salary'];
+  protected readonly saveError = signal(false);
+  protected readonly displayedColumns = [
+    'id',
+    'employee',
+    'jobTitle',
+    'department',
+    'country',
+    'salary',
+    'actions',
+  ];
   protected readonly pageSizeOptions = [10, 25, 50, 100];
 
   ngOnInit(): void {
@@ -84,7 +97,7 @@ export class EmployeeListComponent implements OnInit {
       )
       .subscribe(() => this.requestPage(0, this.pageSize()));
 
-    this.requestPage(0, this.pageSize());
+    this.loadEmployees();
   }
 
   protected onPage(event: PageEvent): void {
@@ -97,6 +110,39 @@ export class EmployeeListComponent implements OnInit {
   }
 
   protected retry(): void {
+    this.loadEmployees();
+  }
+
+  protected openDialog(employee?: Employee): void {
+    this.saveError.set(false);
+    const dialogRef = this.dialog.open(EmployeeFormDialogComponent, {
+      data: employee ?? null,
+      width: '560px',
+      maxWidth: 'calc(100vw - 32px)',
+      autoFocus: 'first-tabbable',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((result): result is Partial<Employee> => result !== undefined),
+        switchMap((result) =>
+          result.id !== undefined
+            ? this.employeeService.updateEmployee(result.id, result)
+            : this.employeeService.addEmployee(result),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: () => {
+          this.saveError.set(false);
+          this.loadEmployees();
+        },
+        error: () => this.saveError.set(true),
+      });
+  }
+
+  protected loadEmployees(): void {
     this.requestPage(this.pageIndex(), this.pageSize());
   }
 

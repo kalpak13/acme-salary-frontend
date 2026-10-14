@@ -1,0 +1,68 @@
+:host {
+  display: block;
+  width: min(100%, 560px);
+}
+
+.employee-form {
+  color: #20332f;
+}
+
+h2[mat-dialog-title] {
+  margin: 0;
+  padding: 24px 24px 12px;
+  color: #193b37;
+  font-size: 21px;
+  font-weight: 600;
+}
+
+mat-dialog-content {
+  max-height: min(70vh, 620px);
+  padding: 12px 24px 4px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 14px;
+}
+
+.form-grid mat-form-field {
+  width: 100%;
+  min-width: 0;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+mat-dialog-actions {
+  gap: 8px;
+  padding: 12px 24px 20px;
+}
+
+@media (max-width: 520px) {
+  :host {
+    width: 100%;
+  }
+
+  h2[mat-dialog-title] {
+    padding: 20px 20px 8px;
+  }
+
+  mat-dialog-content {
+    padding-inline: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  mat-dialog-actions {
+    padding: 8px 20px 16px;
+  }
+}

@@ -1,0 +1,80 @@
+<form class="employee-form" [formGroup]="form" (ngSubmit)="save()">
+  <h2 mat-dialog-title id="employee-form-title">
+    {{ isEditMode ? 'Update employee' : 'Add employee' }}
+  </h2>
+
+  <mat-dialog-content>
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>First name</mat-label>
+        <input matInput formControlName="firstName" autocomplete="given-name" required />
+        @if (form.controls.firstName.touched && form.controls.firstName.hasError('required')) {
+          <mat-error>First name is required.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last name</mat-label>
+        <input matInput formControlName="lastName" autocomplete="family-name" required />
+        @if (form.controls.lastName.touched && form.controls.lastName.hasError('required')) {
+          <mat-error>Last name is required.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Job title</mat-label>
+        <input matInput formControlName="jobTitle" autocomplete="organization-title" required />
+        @if (form.controls.jobTitle.touched && form.controls.jobTitle.hasError('required')) {
+          <mat-error>Job title is required.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Department</mat-label>
+        <input matInput formControlName="department" required />
+        @if (form.controls.department.touched && form.controls.department.hasError('required')) {
+          <mat-error>Department is required.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Country</mat-label>
+        <input matInput formControlName="country" autocomplete="country-name" required />
+        @if (form.controls.country.touched && form.controls.country.hasError('required')) {
+          <mat-error>Country is required.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Annual salary</mat-label>
+        <input
+          matInput
+          formControlName="salary"
+          type="number"
+          min="0.01"
+          step="0.01"
+          inputmode="decimal"
+          required
+        />
+        @if (form.controls.salary.touched && form.controls.salary.hasError('required')) {
+          <mat-error>Salary is required.</mat-error>
+        } @else if (form.controls.salary.touched && form.controls.salary.hasError('min')) {
+          <mat-error>Salary must be greater than zero.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Currency</mat-label>
+        <input matInput formControlName="currency" maxlength="3" autocomplete="off" required />
+        @if (form.controls.currency.touched && form.controls.currency.hasError('required')) {
+          <mat-error>Currency is required.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit">Save</button>
+  </mat-dialog-actions>
+</form>

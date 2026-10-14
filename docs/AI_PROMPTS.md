@@ -13,3 +13,13 @@ Great. Now let's do Step 4. Generate the DashboardComponent (TypeScript, HTML, S
 Prompt 4: Data Table & Pagination
 
 Finally, generate Step 5. Provide the code for EmployeeListComponent. It is crucial that the MatTable connects properly to the MatPaginator and triggers server-side data fetching when the page changes or when the department/country filters are updated.
+
+
+Prompt 1: Service and Dialog Generation
+
+@workspace Please read #add-update-instructions.md. Let's start with Step 1 and Step 2. Update the EmployeeService to include the POST/PUT methods, and then generate the EmployeeFormDialogComponent (TypeScript, HTML, SCSS) using Reactive Forms. Stop and wait for my confirmation.
+
+
+Prompt 2: Updating the Table UI
+
+Perfect. Now execute Step 3 and Step 4. Update the EmployeeListComponent template to include the "Add Employee" button and the new "actions" column in the table. Then, update the component class to handle opening the dialog and saving the data via the service.

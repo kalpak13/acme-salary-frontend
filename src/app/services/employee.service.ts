@@ -35,6 +35,14 @@ export class EmployeeService {
     return this.http.get<PageResponse<Employee>>(`${this.apiUrl}/employees`, { params });
   }
 
+  addEmployee(employee: Partial<Employee>): Observable<Employee> {
+    return this.http.post<Employee>(`${this.apiUrl}/employees`, employee);
+  }
+
+  updateEmployee(id: number, employee: Partial<Employee>): Observable<Employee> {
+    return this.http.put<Employee>(`${this.apiUrl}/employees/${id}`, employee);
+  }
+
   getDashboardAnalytics(): Observable<DashboardAnalytics> {
     return this.http
       .get<BackendDashboardAnalytics>(`${this.apiUrl}/analytics/dashboard`)

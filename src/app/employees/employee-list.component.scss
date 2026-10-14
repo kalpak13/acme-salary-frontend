@@ -70,6 +70,16 @@ h1 {
   margin-right: 4px;
 }
 
+.add-button {
+  min-height: 48px;
+  margin-left: auto;
+  border-radius: 4px;
+}
+
+.add-button mat-icon {
+  margin-right: 4px;
+}
+
 mat-progress-bar {
   height: 3px;
   margin-bottom: 0;
@@ -136,6 +146,11 @@ mat-progress-bar {
   white-space: nowrap;
 }
 
+.actions-column {
+  width: 76px;
+  text-align: center;
+}
+
 .empty-state {
   display: flex;
   min-height: 170px;
@@ -181,6 +196,12 @@ mat-paginator {
   .clear-button {
     grid-column: 1 / -1;
     justify-self: start;
+  }
+
+  .add-button {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin-left: 0;
   }
 
   mat-paginator {
