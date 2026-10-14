@@ -66,6 +66,8 @@ describe('EmployeeListComponent', () => {
 
   it('loads the first server page and requests the selected page on paginator changes', () => {
     expect(employeeService.getEmployees).toHaveBeenNthCalledWith(1, 0, 25, undefined, undefined);
+    expect(fixture.nativeElement.textContent).toContain('Avery Morgan');
+    expect(fixture.nativeElement.textContent).toContain('Engineering');
 
     const paginator = fixture.debugElement.query(By.directive(MatPaginator)).componentInstance as MatPaginator;
     paginator.page.emit({ pageIndex: 1, pageSize: 25, length: 51, previousPageIndex: 0 });
@@ -92,6 +94,28 @@ describe('EmployeeListComponent', () => {
     await vi.advanceTimersByTimeAsync(250);
 
     expect(employeeService.getEmployees).toHaveBeenLastCalledWith(0, 25, 'Engineering', undefined);
+    vi.useRealTimers();
+  });
+
+  it('refetches from page zero when the country filter changes', async () => {
+    vi.useFakeTimers();
+
+    const paginator = fixture.debugElement.query(By.directive(MatPaginator)).componentInstance as MatPaginator;
+    paginator.page.emit({ pageIndex: 2, pageSize: 25, length: 51, previousPageIndex: 0 });
+    fixture.detectChanges();
+
+    const countryInput = fixture.nativeElement.querySelector(
+      'input[placeholder="e.g. Canada"]',
+    ) as HTMLInputElement;
+    countryInput.value = 'Canada';
+    countryInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(paginator.pageIndex).toBe(0);
+
+    await vi.advanceTimersByTimeAsync(250);
+
+    expect(employeeService.getEmployees).toHaveBeenLastCalledWith(0, 25, undefined, 'Canada');
     vi.useRealTimers();
   });
 
