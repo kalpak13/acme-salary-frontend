@@ -1,0 +1,116 @@
+<div class="dashboard-page">
+  <header class="page-heading">
+    <span class="eyebrow">PEOPLE OPERATIONS</span>
+    <h1>Salary overview</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="state-panel" role="status">
+      <mat-spinner diameter="30" aria-label="Loading salary analytics"></mat-spinner>
+      <span>Loading salary analytics</span>
+    </div>
+  } @else if (loadError()) {
+    <div class="state-panel error-state" role="alert">
+      <mat-icon aria-hidden="true">cloud_off</mat-icon>
+      <span>Salary analytics could not be loaded.</span>
+      <button mat-stroked-button type="button" (click)="retry()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div>
+  } @else if (analytics(); as data) {
+    <section class="metrics-grid" aria-label="Payroll summary">
+      <mat-card class="metric-card payroll-card">
+        <mat-card-content>
+          <div class="metric-heading">
+            <span class="metric-label">Total payroll</span>
+            <span class="metric-icon payroll-icon">
+              <mat-icon aria-hidden="true">payments</mat-icon>
+            </span>
+          </div>
+          <div class="metric-value">{{ data.totalPayroll | currency: 'USD' : 'symbol' : '1.0-0' }}</div>
+          <div class="metric-detail">USD</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="metric-card headcount-card">
+        <mat-card-content>
+          <div class="metric-heading">
+            <span class="metric-label">Total headcount</span>
+            <span class="metric-icon headcount-icon">
+              <mat-icon aria-hidden="true">groups</mat-icon>
+            </span>
+          </div>
+          <div class="metric-value">{{ data.headcount | number }}</div>
+          <div class="metric-detail">Employees</div>
+        </mat-card-content>
+      </mat-card>
+    </section>
+
+    <section class="breakdown-grid" aria-label="Average salary breakdown">
+      <section class="breakdown-section" aria-labelledby="department-heading">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">BY DEPARTMENT</span>
+            <h2 id="department-heading">Average salary</h2>
+          </div>
+          <span class="section-count">{{ departmentAverages().length }} groups</span>
+        </div>
+
+        @if (departmentAverages().length > 0) {
+          <div class="breakdown-list">
+            @for (entry of departmentAverages(); track entry.name) {
+              <div class="breakdown-row">
+                <div class="row-labels">
+                  <span class="row-name">{{ entry.name }}</span>
+                  <span class="row-value">{{ entry.average | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+                </div>
+                <div
+                  class="bar-track"
+                  role="img"
+                  [attr.aria-label]="entry.name + ' average salary, ' + (entry.average | currency: 'USD')"
+                >
+                  <span class="bar department-bar" [style.width.%]="barWidth(entry.average, maxDepartmentAverage())"></span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">No department averages available.</p>
+        }
+      </section>
+
+      <section class="breakdown-section" aria-labelledby="country-heading">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">BY COUNTRY</span>
+            <h2 id="country-heading">Average salary</h2>
+          </div>
+          <span class="section-count">{{ countryAverages().length }} groups</span>
+        </div>
+
+        @if (countryAverages().length > 0) {
+          <div class="breakdown-list">
+            @for (entry of countryAverages(); track entry.name) {
+              <div class="breakdown-row">
+                <div class="row-labels">
+                  <span class="row-name">{{ entry.name }}</span>
+                  <span class="row-value">{{ entry.average | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+                </div>
+                <div
+                  class="bar-track"
+                  role="img"
+                  [attr.aria-label]="entry.name + ' average salary, ' + (entry.average | currency: 'USD')"
+                >
+                  <span class="bar country-bar" [style.width.%]="barWidth(entry.average, maxCountryAverage())"></span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">No country averages available.</p>
+        }
+      </section>
+    </section>
+  }
+</div>
