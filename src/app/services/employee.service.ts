@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { DashboardAnalytics } from '../models/dashboard-analytics.model';
 import { Employee } from '../models/employee.model';
 import { PageResponse } from '../models/page-response.model';
-
+import { environment } from '../../environments/environment';
 interface BackendDashboardAnalytics {
   totalPayroll: number;
   headcount: number;
@@ -15,7 +15,7 @@ interface BackendDashboardAnalytics {
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api';
+  private readonly apiUrl = environment.apiUrl + '/api';
 
   getEmployees(
     page: number,
